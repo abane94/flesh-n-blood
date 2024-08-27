@@ -1,0 +1,73 @@
+/* <div class="player-mat opponent">
+    <For each={FleshBloodLayout.rows}>{(row, i) =>
+        <div class="">
+            <For each={row.cells}>{(cell, i) =>
+                <div class="cell">
+                    <div class="card">
+                        <img class="card-img" src="https://dhhim4ltzu1pj.cloudfront.net/media/images/back4.width-300.format-webp.webp"></img>
+                    </div>
+                    <div class="label">{cell.label}</div>
+                </div>
+            }</For>
+        </div>
+    }</For>
+</div> */
+.deck-init-screen {
+    display: flex;
+    height: 100%;
+}
+
+.deck-init-layout {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* .opponent {
+    flex-direction: column-reverse;
+} */
+
+.game-card {
+    height: 85%;
+}
+
+.game-card-img {
+    height: 100%
+}
+
+.game-card-label {
+    height: 15%;
+}
+
+.game-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.disabled {
+    opacity: 0.4;
+}
+
+.input-panel {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+
+/* card-cell */
+
+.empty {
+    opacity: .5;
+}
+
+.disabled .img {
+    opacity: 0;
+    border: 2px solid black;
+}
