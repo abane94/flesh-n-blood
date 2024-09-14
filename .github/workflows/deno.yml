@@ -67,3 +67,18 @@ jobs:
         with:
           files: client-dist/ flesh-n-blood.exe
           dest: flesh-n-blood.zip
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      # - name: Check outputs
+      #   run: echo ${{ steps.vars.outputs.sha_short }}
+
+      - uses: actions/upload-artifact@v4
+        id: upload-step
+        with:
+          name: flesh-n-blood-${{ steps.vars.outputs.sha_short }}
+          path: ${{ github.workspace }}/flesh-n-blood.zip
+
+      - name: Check outputs
+        run: echo ${{ steps.upload-step.outputs.artifact-url }}
