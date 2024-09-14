@@ -6,27 +6,10 @@ import {
   LobbyGameStatus,
 } from "./lobby-types.ts";
 import { allCreatures, createCreatureCard, Games, Sockets } from "./db.ts";
-import {
-  CreatureCard,
-  CreatureId,
-  Deck,
-  Player,
-  PlayerId,
-} from "../game/types/common.ts";
+import { Player, PlayerId } from "../game/types/common.ts";
 import { getAttackDeck, guid } from "./util.ts";
 import { GameState } from "../game/types/game.ts";
-import { GamePhase } from "../game/types/game.ts";
-import {
-  GameActions,
-  GameActionsKeys,
-  GameEvent,
-  GameEventKeys,
-} from "../game/actions/game-actions.ts";
-import {
-  CombatActions,
-  CombatActionsKeys,
-} from "../game/actions/combat-actions.ts";
-import { ActionType, applyGameAction } from "../game/transitions/game.ts";
+import { GameEventKeys } from "../game/actions/game-actions.ts";
 import { Leave } from "../game/errors.ts";
 import {
   FleshBloodLayout,
@@ -43,7 +26,6 @@ api.get("/", (c: Context) => c.text("Hello Deno!"));
 
 interface CreateRequest {
   name: string;
-  // creature: CreatureId
   deckData: Record<string, string>;
 }
 interface CreateResponse {
@@ -116,7 +98,6 @@ api.get("/game", (c: Context) => { // status = LobbyGameStatus
 
 interface JoinRequest {
   name: string;
-  //   creature: CreatureId;
   deckData: Record<string, string>;
 }
 interface JoinResponse {
@@ -135,14 +116,6 @@ api.post("/join/:gameId", async (c: Context) => {
     throw new HTTPException(401, { message: "Game not available to join" }); // TODO standardize error codes
   }
 
-  // const creature
-  //   const creatureCard = createCreatureCard(body.creature);
-  //   const deck = getAttackDeck(creatureCard);
-  //   const hand = [deck.pop(), deck.pop()] as Deck;
-
-  // const body: CreateRequest = await c.req.json();
-  //   const playerId = guid();
-  //   const gameId = guid();
   const deckData = body.deckData;
   const game: LobbyGame = {
     ...lobbyGame,
@@ -164,17 +137,6 @@ api.post("/join/:gameId", async (c: Context) => {
     userId: playerId,
     gameId: gameId,
   };
-  // const actionResult = applyGameAction(
-  //   game.game,
-  //   ActionType.game({ action: GameActions.join({ id: playerId }) }),
-  //   playerId,
-  // );
-
-  // if (actionResult instanceof Error) {
-  //   throw new HTTPException(401, { message: actionResult.message }); // TODO standardize error codes
-  // }
-  // shouldnt need to handle the GameEvent, since it would just be an update (?) at this point, and I already know what to do as a result
-
   broadcast(gameId, playerId, "join");
   return c.json({
     ok: true,
@@ -189,10 +151,6 @@ export interface ActionRequest {
   cell: Spot;
   state: SpotState;
   actionPayload: any;
-  // action: { actionType: "Combat"; actionName: CombatActionsKeys } | {
-  //   actionType: "Game";
-  //   actionName: GameActionsKeys;
-  // };
   action:
     | "SEND-TO"
     | "FLIP"
@@ -212,23 +170,6 @@ api.post("/action", async (c: Context) => { // type = 'Game' | 'Combat'
     throw new HTTPException(401, { message: "Game not available for actions" }); // TODO standardize error codes
   }
 
-  let action: ActionType;
-
-  // const result = await applyAction(game, body);
-  // if (result instanceof Error) {
-  //   if (result instanceof Leave) {
-  //     broadcast(game.id, body.playerId, "leave");
-  //     delete Sockets[body.playerId];
-  //     // when to clean up other player socket??
-  //     game.status = "Cancelled";
-  //     Games[game.id] = game;
-  //     return c.json({
-  //       ok: true,
-  //     });
-  //   }
-  //   throw new HTTPException(401, { message: result.message }); // TODO standardize error codes
-  // }
-
   const [newGame, message] = await applyAction(game, body);
   newGame.log.push(message);
   Games[body.gameId] = newGame;
@@ -245,34 +186,6 @@ api.post("/action", async (c: Context) => { // type = 'Game' | 'Combat'
   });
 });
 
-// data
-type creatureFilters = keyof Pick<CreatureCard, "tribe">;
-api.get("/data/creatures/:id", (c: Context) => {
-  const id: LobbyGameStatus = c.req.param("id");
-  const creatureCard = createCreatureCard(id);
-  if (creatureCard) {
-    return c.json({
-      ok: true,
-      creatureCard,
-    });
-  } else {
-    throw new HTTPException(404, { message: "Creature not found" }); // TODO standardize error codes
-  }
-});
-api.get("/data/creatures", (c: Context) => {
-  const tribe = c.req.query("tribe");
-  let creatures = allCreatures();
-  if (tribe) {
-    creatures = creatures.filter((c) =>
-      c.tribe.toLowerCase() === tribe.toLowerCase()
-    );
-  }
-  return c.json({
-    ok: true,
-    creatures,
-  });
-});
-
 // web socket
 api.get("/ws/", (c: Context) => {
   const playerId = c.req.query("id");
@@ -282,24 +195,12 @@ api.get("/ws/", (c: Context) => {
     }); // TODO standardize error codes
   }
 
-  // if (c.req.raw.headers.get("upgrade") != "websocket") {
-  //     return new Response(null, { status: 501 });
-  //   }
   const { response, socket } = Deno.upgradeWebSocket(
     c.req.raw as unknown as Request,
   );
-  // socket.addEventListener('message', (e) => console.log(e))
-  // TODO: store socket
   Sockets[playerId] = socket;
   return response;
 });
-
-// app.get('/posts/:id', (c) => {
-//     const page = c.req.query('page')
-//     const id = c.req.param('id')
-//     c.header('X-Message', 'Hi!')
-//     return c.text(`You want see ${page} of ${id}`)
-//   })
 
 function broadcast(
   gameId: GameId,

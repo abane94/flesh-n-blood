@@ -1,8 +1,7 @@
 
 import { For, Show, createResource } from "solid-js";
-import type { CreatureCard } from "../../../game/types/common";
 import type { LobbyGame } from '../../../server/lobby-types'
-import { creatureCard, deckData, name, setGameId, setIsPlayer0, setUserId } from "../global-state";
+import { deckData, name, setGameId, setIsPlayer0, setUserId } from "../global-state";
 
 const fetchGames = async () =>
     (await (await fetch(`/api/game?status=Open`)).json()).games;
@@ -14,7 +13,6 @@ const Lobby = () => {
             method: 'POST',
             body: JSON.stringify({
                 name: name(),
-                creature: creatureCard()?.id,
                 deckData: deckData()
             })
         })).json();
@@ -27,7 +25,6 @@ const Lobby = () => {
             method: 'POST',
             body: JSON.stringify({
                 name: name(),
-                creature: creatureCard()?.id,
                 deckData: deckData()
             })
         })).json();
@@ -41,7 +38,6 @@ const Lobby = () => {
             <div>
                 <h3>{name()}</h3>
                 <div class="">
-                    {/* <img src={creatureCard()?.cardImage} /> */}
                     <img src={deckData()?.Hero} />
                 </div>
                 <button onclick={createGame}>Create Game</button>
@@ -52,8 +48,6 @@ const Lobby = () => {
                         <For each={games()}>{(game, i) =>
                             <div class="" onClick={() => joinGame(game)}>
                                 {game.player0Name} {game.id}
-                                {/* {JSON.stringify(game)} */}
-                                {/* Game ^ */}
                             </div>
                         }</For>
                     </Show>

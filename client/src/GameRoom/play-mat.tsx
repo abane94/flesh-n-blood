@@ -2,7 +2,7 @@ import { For, JSX, Show, createResource, createSignal, Switch, Match, createEffe
 import { FleshBloodLayout, Spot, SpotState } from '../../../config';
 import './play-mat.css';
 import { CellProps, PlayerMat } from "./player-mat";
-import { LobbyGame } from "../../../server/lobby-types";
+// import { LobbyGame } from "../../../server/lobby-types";
 import { gameState as GlobalGameState, isPlayer0, userId } from "../global-state";
 import { Deck, DeckState, SingleSpotState } from "../../../config.ts";
 import { DetailPane } from "./detail-pane";
@@ -28,19 +28,9 @@ export const PlayMat = () => {
     const [myData, setMyData] = createSignal<PlayerData>();
     const [opponentData, setOpponentData] = createSignal<PlayerData>();
 
-    // const myHand = () => {
-    //     return myState()?.game[isPlayer0() ? 'player0Data' : 'player1Data']?.hand;
-    // }
 
     const [myHand, setMyHand] = createSignal<string[]>([]);
-
-
-    // const myState = () => {
-    //     const _gameState = gameState()
-    //     return _gameState?.game.player0 === userId() ? _gameState?.game.player0Data?.state : _gameState?.game.player1Data?.state
-    // }
     createEffect(() => {
-        // setMyState(GlobalGameState());
         setMyData(GlobalGameState()?.game[isPlayer0() ? 'player0Data' : 'player1Data']);
         setOpponentData(GlobalGameState()?.game[isPlayer0() ? 'player1Data' : 'player0Data'])
         setMyHand(GlobalGameState()?.game[isPlayer0() ? 'player0Data' : 'player1Data']?.hand || []);
@@ -64,7 +54,6 @@ export const PlayMat = () => {
 
         const data = () => {
             console.log('new data');
-            // return myState()?.game[isPlayer0() ? 'player0Data' : 'player1Data']?.state[props.cell.label];
             return props.opponent ? opponentData()?.state[props.cell.label]
                 : myData()?.state[props.cell.label];
         };
@@ -98,35 +87,11 @@ export const PlayMat = () => {
                     </div>
                 </Match>
             </Switch>
-
-
-            {/* <div class="card-cell" style={{ "height": `${rowHeight - 3}px` }}>
-                <div class="game-card">
-                    <Show when={image || !props.cell.hidePlaceholder}>
-                        <img class="game-card-img" src={image || layout().cardBack}></img>
-                    </Show>
-                </div>
-                <div class="game-card-label">{props.cell.label}</div>
-            </div> */}
         </>
     }
 
 
     return <>
-        {/* <div class="play-mat opponent">
-            <For each={FleshBloodLayout.rows}>{(row, i) =>
-                <div class="game-row" style={{ "max-height": `${rowHeight}px` }}>
-                    <For each={row.cells}>{(cell, i) =>
-                        <div class="card-cell" style={{ "height": `${rowHeight - 3}px` }}>
-                            <div class="game-card">
-                                <img class="game-card-img" src="https://dhhim4ltzu1pj.cloudfront.net/media/images/back4.width-300.format-webp.webp"></img>
-                            </div>
-                            <div class="game-card-label">{cell.label}</div>
-                        </div>
-                    }</For>
-                </div>
-            }</For>
-        </div> */}
         <div class="play-mat">
             <div class="player-mats">
                 <PlayerMat layout={layout()} rowHeight={rowHeight} cardComponent={CellComponent} opponent={true}></PlayerMat>{/* playerState={myState()!}  */}

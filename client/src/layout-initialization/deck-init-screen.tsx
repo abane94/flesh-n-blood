@@ -39,13 +39,11 @@ export const GameInitScreen = () => {
     const saveSpot = () => {
         const cell = inputCell();
         if (cell?.type === 'DECK') {
-            // console.log(inputTextArea.value);
             setData({
                 ...data(),
                 [cell.label]: inputTextArea.value?.split('\n')
             })
         } else if (cell?.type === 'SPOT') {
-            // console.log(inputField.value)
             setData({
                 ...data(),
                 [cell.label]: inputField.value

@@ -1,17 +1,3 @@
-/* <div class="player-mat opponent">
-    <For each={FleshBloodLayout.rows}>{(row, i) =>
-        <div class="">
-            <For each={row.cells}>{(cell, i) =>
-                <div class="cell">
-                    <div class="card">
-                        <img class="card-img" src="https://dhhim4ltzu1pj.cloudfront.net/media/images/back4.width-300.format-webp.webp"></img>
-                    </div>
-                    <div class="label">{cell.label}</div>
-                </div>
-            }</For>
-        </div>
-    }</For>
-</div> */
 .deck-init-screen {
     display: flex;
     height: 100%;
@@ -24,10 +10,6 @@
     flex-direction: column;
     align-items: stretch;
 }
-
-/* .opponent {
-    flex-direction: column-reverse;
-} */
 
 .game-card {
     height: 85%;

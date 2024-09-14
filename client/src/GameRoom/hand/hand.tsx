@@ -3,12 +3,6 @@ import './hand.css';
 import { SpotState, Spot, DeckState } from "../../../../config";
 
 interface Props {
-    // state: SpotState | undefined;
-    // config: Spot | undefined;
-    // destinations: string[];
-    // opponent: boolean | undefined;
-    // cardBack: string;
-    // index: number;
     cards: string[];
     rowHeight: number;
     onSelectCard: (state: SpotState, config: Spot, isOpponent: boolean, index: number) => void
@@ -42,12 +36,10 @@ export const Hand = (props: Props) => {
         props.onSelectCard(handState(), spot(), false, i)
     }
 
-    // const spot
 
     return <>
         <div class="hand-container">
             <div class="hand-cards">
-                {/* this is my hand */}
 
                 <For each={props.cards || []}>
                     {

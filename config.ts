@@ -14,24 +14,6 @@ interface SpotDeckBase {
   };
 }
 
-// interface Spot {
-//   // label: string;
-//   // faceDown?: boolean;
-//   single?: boolean;
-//   // initializable?: boolean;
-//   // destination?: boolean;
-//   drawable?: boolean;
-//   // flipable?: boolean;
-//   searchable?: boolean;
-//   horizontalStack?: boolean; // realy only applies to single=false
-//   // counter?: {
-//   //   start: number;
-//   //   min: number;
-//   //   max: number;
-//   //   step: number;
-//   // };
-// }
-
 export interface SingleSpot extends SpotDeckBase {
   type: "SPOT";
 }
@@ -45,13 +27,6 @@ export interface Deck extends SpotDeckBase {
 }
 
 export type Spot = SingleSpot | Deck;
-
-interface CardSpace {
-  // label: string;
-  faceDown: boolean;
-  content?: string | string[];
-  counter: number;
-}
 
 type GameConfigRow = {
   flex: string;
@@ -130,8 +105,6 @@ export const FleshBloodLayout: GameLayoutConfig = {
       counter: {
         start: 0,
         min: 0,
-        // max: number,
-        // step: number,
       },
     }, {
       label: "Weapon 2",
@@ -187,26 +160,6 @@ export const FleshBloodLayout: GameLayoutConfig = {
   cardBack:
     "https://dhhim4ltzu1pj.cloudfront.net/media/images/back4.width-300.format-webp.webp",
 };
-
-// State
-type TransformedCell<T extends Spot> = {
-  label: T["label"];
-  cards: string[];
-};
-
-type TransformedRow<T extends Spot[]> = {
-  // flex: string;
-  cells: Array<TransformedCell<T[number]>>;
-};
-
-type TransformedGameLayoutConfig<T extends Spot[][]> = {
-  rows: Array<TransformedRow<T[number]>>;
-};
-
-// Apply the mapped types to transform the GameLayoutConfig
-// export type TransformedFleshBloodLayout = TransformedGameLayoutConfig<
-//   GameConfigRow[]
-// >;
 
 export interface SingleSpotState {
   type: "SPOT";

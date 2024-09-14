@@ -12,14 +12,6 @@ interface Props {
     index: number;
 }
 
-{/* <Dropdown title="Load Deck">
-    <For each={deckList()}>
-        {(name, i) => <button onclick={() => loadDeck(name)}>
-            {name}
-        </button>}
-    </For>
-</Dropdown> */}
-
 
 export const DetailPane = (props: Props) => {
 
@@ -53,13 +45,6 @@ export const DetailPane = (props: Props) => {
                     <Show when={!props.opponent} fallback={
                         <img src={props.state?.faceDown ? props.cardBack : props.state?.type === 'DECK' ? props.state.cards[0] : props.state?.card} />
                     }>
-
-                        {/* <select>
-                            <option>Send To...</option>
-                            <For each={props.destinations || []}>{
-                                (label: string) => <option onclick={() => Actions.sendTo(props.config!, props.state!, label)}>{label}</option>
-                            }</For>
-                        </select> */}
                         <div class="dropdown">
                             <button class="dropbtn">{props.config?.label === 'Hand' ? 'Play To...' : 'Send To...'}</button>
                             <div class="dropdown-content">
