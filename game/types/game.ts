@@ -1,5 +1,5 @@
 import { PlayerState } from "../../config.ts";
-import { CreatureCard, Deck, Player } from "./common.ts";
+import { Player } from "./common.ts";
 import { createHelperFunctions, TaggedUnion } from "npm:ts-tagged-union@1.1.1";
 
 interface GamePhaseEnum {

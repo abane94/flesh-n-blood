@@ -7,7 +7,8 @@
     "_dev": "vite",
     "dev": "vite build --watch  --sourcemap true --mode dev",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "build:ci": "vite build --outDir ../client-dist"
   },
   "license": "MIT",
   "devDependencies": {

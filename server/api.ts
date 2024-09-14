@@ -1,16 +1,10 @@
 import { Context, Hono, HTTPException } from "https://deno.land/x/hono/mod.ts";
-import {
-  GameId,
-  LobbyGame,
-  LobbyGameOpen,
-  LobbyGameStatus,
-} from "./lobby-types.ts";
-import { allCreatures, createCreatureCard, Games, Sockets } from "./db.ts";
+import { GameId, LobbyGame, LobbyGameStatus } from "./lobby-types.ts";
+import { Games, Sockets } from "./db.ts";
 import { Player, PlayerId } from "../game/types/common.ts";
-import { getAttackDeck, guid } from "./util.ts";
+import { guid } from "./util.ts";
 import { GameState } from "../game/types/game.ts";
 import { GameEventKeys } from "../game/actions/game-actions.ts";
-import { Leave } from "../game/errors.ts";
 import {
   FleshBloodLayout,
   getConfigObject,

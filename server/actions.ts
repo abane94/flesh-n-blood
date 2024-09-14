@@ -74,9 +74,12 @@ const sendTo = (
         };
     }
   } else {
+    const playerData = game.game[isPlayer0 ? "player0Data" : "player1Data"];
+    const deckState = playerData?.state[action.cell.label] as
+      | DeckState
+      | undefined;
     if (
-      !game.game[isPlayer0 ? "player0Data" : "player1Data"]
-        ?.state[action.cell.label]?.cards.length
+      !(deckState?.cards.length)
     ) {
       throw new Error(`Empty deck [${targetLabel}]`);
     }
