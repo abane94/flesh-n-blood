@@ -3,6 +3,6 @@
       "start": "deno run --allow-net --allow-read main.ts",
       "test": "deno test --allow-net",
       "lint": "deno lint",
-      "compile": "deno compile --target x86_64-pc-windows-msvc --allow-read --allow-net main.ts --deno-compiled-exe"
+      "compile": "deno compile --target x86_64-pc-windows-msvc -o dist/flesh-n-blood.exe --allow-read --allow-net main.ts --deno-compiled-exe"
     }
 }

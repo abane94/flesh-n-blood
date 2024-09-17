@@ -65,7 +65,7 @@ jobs:
 
       - uses: vimtor/action-zip@v1.2
         with:
-          files: client-dist flesh-n-blood.exe
+          files: dist/
           dest: flesh-n-blood.zip
 
       - name: Set outputs
