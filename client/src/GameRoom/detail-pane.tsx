@@ -7,6 +7,7 @@ interface Props {
     state: SpotState | undefined;
     config: Spot | undefined;
     destinations: string[];
+    deckDestinations: string[]
     opponent: boolean | undefined;
     cardBack: string;
     index: number;
@@ -15,6 +16,7 @@ interface Props {
 
 export const DetailPane = (props: Props) => {
 
+    const deckDestinations = () => props.deckDestinations.filter(destination => destination !== props.config?.label)
 
     return <>
         <div class="detail-pane">
@@ -43,7 +45,7 @@ export const DetailPane = (props: Props) => {
             <div class="card-details">
                 <Show when={props.config}>
                     <Show when={!props.opponent} fallback={
-                        <img src={props.state?.faceDown ? props.cardBack : props.state?.type === 'DECK' ? props.state.cards[0] : props.state?.card} />
+                        <img src={props.state?.faceDown ? props.cardBack : props.state?.type === 'DECK' ? props.state.cards[props.index || 0] : props.state?.card} />
                     }>
                         <div class="dropdown">
                             <button class="dropbtn">{props.config?.label === 'Hand' ? 'Play To...' : 'Send To...'}</button>
@@ -53,6 +55,18 @@ export const DetailPane = (props: Props) => {
                                 }</For>
                             </div>
                         </div>
+
+                        <Show when={props.config?.type === 'DECK' && props.config?.label !== 'Hand' && props.deckDestinations.length}>
+                            <div class="dropdown">
+                                <button class="dropbtn">Send All To...</button>
+                                <div class="dropdown-content">
+                                    <For each={deckDestinations() || []}>{
+                                        (label: string) => <button class="button stack" onclick={() => Actions['sendAll'](props.config!, props.state!, label)}>{label}</button>
+                                    }</For>
+                                </div>
+                            </div>
+                        </Show>
+
                         <Show when={props.config?.flipable}>
                             <button onclick={() => Actions.flip(props.config!, props.state!)}>Flip</button>
                         </Show>

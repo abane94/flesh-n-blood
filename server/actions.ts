@@ -30,6 +30,8 @@ export const applyAction = async (game: LobbyGame, action: ActionRequest) => {
       return setNotes(game, action, isPlayer0, playerName);
     case "PLAY-CARD":
       return playCard(game, action);
+    case "SEND-ALL":
+      return sendAll(game, action);
     default:
       throw new HTTPException(401, {
         message: `Invalid Action type [${action.action}]`,
@@ -274,5 +276,50 @@ const draw = (
     `${playerName} drew a card from [${action.cell.label}], they now have ${
       game.game[isPlayer0 ? "player0Data" : "player1Data"]!.hand.length
     } cards in their hand`,
+  ];
+};
+
+const sendAll = (
+  game: LobbyGame,
+  action: ActionRequest,
+): [LobbyGame, string] => {
+  const isPlayer0 = action.playerId === game.game.player0;
+
+  const targetLabel = action.actionPayload.targetLabel;
+
+  const targetConfig = getConfigObject(FleshBloodLayout)[targetLabel];
+
+  if (targetConfig?.type === "SPOT") {
+    throw new Error(`Cannot send all to SPOT`);
+  }
+
+  if (action.cell.type === "SPOT") {
+    throw new Error("Spot cannot send all");
+  }
+
+  const targetState = game.game[isPlayer0 ? "player0Data" : "player1Data"]
+    ?.state[targetLabel] as DeckState | undefined;
+
+  const playerData = game.game[isPlayer0 ? "player0Data" : "player1Data"];
+  const deckState = playerData?.state[action.cell.label] as
+    | DeckState
+    | undefined;
+  if (
+    !(deckState?.cards.length)
+  ) {
+    throw new Error(`Empty deck [${targetLabel}]`);
+  }
+
+  targetState?.cards.push(...(deckState?.cards || []));
+  (game.game[isPlayer0 ? "player0Data" : "player1Data"]
+    ?.state[action.cell.label] as DeckState).cards = [];
+
+  // game.game[isPlayer0 ? "player0Data" : "player1Data"].state[targetLabel] = targetState
+
+  return [
+    game,
+    `${
+      isPlayer0 ? game.player0Name : game.player1Name
+    } move all cards from ${action.cell.label} to ${targetLabel}`,
   ];
 };

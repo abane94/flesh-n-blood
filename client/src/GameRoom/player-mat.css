@@ -28,6 +28,12 @@
     border: lightgray solid 2px;
 }
 
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
 
 /* card-cell */
 

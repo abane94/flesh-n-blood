@@ -8,4 +8,6 @@
 
 .hand-cards {
     background-color: blueviolet;
+    display: flex;
+    justify-content: space-between;
 }

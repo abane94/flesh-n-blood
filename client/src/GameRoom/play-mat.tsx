@@ -8,6 +8,8 @@ import { Deck, DeckState, SingleSpotState } from "../../../config.ts";
 import { DetailPane } from "./detail-pane";
 import { Hand } from "./hand/hand";
 import { PlayerData } from "../../../game/types/game";
+import Split from 'split.js';
+import { LogPane } from "./log-pane/log-pane.tsx";
 
 
 export const PlayMat = () => {
@@ -19,6 +21,9 @@ export const PlayMat = () => {
     const destinations = FleshBloodLayout.rows.map(row => {
         return row.cells.filter(cell => cell.destination)
     }).flat().map(row => row.label);
+    const deckDestinations = FleshBloodLayout.rows.map(row => {
+        return row.cells.filter(cell => cell.destination)
+    }).flat().filter(row => row.type === 'DECK').map(row => row.label);
     console.log(destinations);
 
     // TODO: move to global state
@@ -53,7 +58,7 @@ export const PlayMat = () => {
     const CellComponent = (props: CellProps) => {
 
         const data = () => {
-            console.log('new data');
+            // console.log('new data');
             return props.opponent ? opponentData()?.state[props.cell.label]
                 : myData()?.state[props.cell.label];
         };
@@ -90,16 +95,42 @@ export const PlayMat = () => {
         </>
     }
 
+    createEffect(() => {
+        const windowWidth = window.innerWidth;
+        // const split = Split(['#game-pane', '#detail-pane'])
+        const sizesKey = localStorage.getItem('split-sizes');
+        let sizes: number[];
+        if (sizesKey) {
+            sizes = JSON.parse(sizesKey)
+        } else {
+            sizes = [20, 80, 20];
+        }
+
+        const split = Split(['#log-pane', '#game-pane', '#detail-pane'], {
+            sizes,
+            maxSize: [800, Infinity, 800],
+            minSize: [50, 800, 100],
+            onDragEnd: function (newSizes: number[]) {
+                localStorage.setItem('split-sizes', JSON.stringify(newSizes))
+            },
+        })
+    });
+
 
     return <>
         <div class="play-mat">
-            <div class="player-mats">
-                <PlayerMat layout={layout()} rowHeight={rowHeight} cardComponent={CellComponent} opponent={true}></PlayerMat>{/* playerState={myState()!}  */}
-                <PlayerMat layout={layout()} rowHeight={rowHeight} cardComponent={CellComponent}></PlayerMat>{/* playerState={myState()!}  */}
-                <Hand cards={myHand()} rowHeight={rowHeight} onSelectCard={selectCard}></Hand>
+            <div id="log-pane">
+                <LogPane windowHeight={windowHeight} />
             </div>
-            <div class="details">
-                <DetailPane state={selectedCardState()} config={selectedCellConfig()} destinations={destinations} opponent={isSelectedOpponent()} cardBack={FleshBloodLayout.cardBack} index={selectedIndex()}></DetailPane>
+            <div id="game-pane" class="player-mats">
+                <Show when={opponentData()} fallback={<div>Waiting for player 2</div>}>
+                    <PlayerMat layout={layout()} rowHeight={rowHeight} cardComponent={CellComponent} opponent={true}></PlayerMat>{/* playerState={myState()!}  */}
+                    <PlayerMat layout={layout()} rowHeight={rowHeight} cardComponent={CellComponent}></PlayerMat>{/* playerState={myState()!}  */}
+                    <Hand cards={myHand()} rowHeight={rowHeight} onSelectCard={selectCard}></Hand>
+                </Show>
+            </div>
+            <div id="detail-pane" class="details">
+                <DetailPane state={selectedCardState()} config={selectedCellConfig()} destinations={destinations} deckDestinations={deckDestinations} opponent={isSelectedOpponent()} cardBack={FleshBloodLayout.cardBack} index={selectedIndex()}></DetailPane>
             </div>
 
         </div>

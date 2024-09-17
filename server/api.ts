@@ -64,7 +64,7 @@ api.post("/game", async (c: Context) => {
     // status: "InProgress" as "Open",
     status: "Open",
     game: newGame,
-    log: [],
+    log: [`${body.name} started the game. Waiting on player 2`],
   };
   Games[gameId] = newLobbyGame;
   const resp: CreateResponse = {
@@ -124,6 +124,7 @@ api.post("/join/:gameId", async (c: Context) => {
         state: initPlayerState(getConfigObject(FleshBloodLayout), deckData),
       },
     },
+    log: [...lobbyGame.log, `${body.name} joined the game`],
   };
   Games[gameId] = game;
 
@@ -152,7 +153,8 @@ export interface ActionRequest {
     | "SEARCH"
     | "SET-COUNTER"
     | "PLAY-CARD"
-    | "SET-NOTES";
+    | "SET-NOTES"
+    | "SEND-ALL";
 }
 interface ActionResponse {
 }

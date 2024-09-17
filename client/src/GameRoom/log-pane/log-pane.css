@@ -1,0 +1,9 @@
+.event-log {
+    overflow-y: scroll;
+    overflow-x: unset;
+}
+
+.log-event {
+    margin: 2px;
+    border: 1px solid grey;
+}

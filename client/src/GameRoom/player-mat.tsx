@@ -37,7 +37,7 @@ export const PlayerMat = (props: Props) => {
 
                 <div class={"game-row justify-content__" + row.flex} style={{ "height": `${props.rowHeight}px`, 'background-color': row.backgroundColor || 'transparent' }}>
                     <For each={row.cells}>{(cell, j) =>
-                        <div class={'cell ' + getTooltipClass(!!props.opponent, i(), FleshBloodLayout.rows.length, j(), row.cells.length)} data-row={i()} data-cell={j()} data-tooltip={cell.label} >
+                        <div class={'cell ' + (cell.horizontalStack ? 'horizontal ' : '') + getTooltipClass(!!props.opponent, i(), FleshBloodLayout.rows.length, j(), row.cells.length)} data-row={i()} data-cell={j()} data-tooltip={cell.label} >
                             <Dynamic component={props.cardComponent} cell={cell} rowHeight={props.rowHeight} rowNum={i()} cellIdx={j()} opponent={props.opponent}></Dynamic>
                         </div>
                     }</For>

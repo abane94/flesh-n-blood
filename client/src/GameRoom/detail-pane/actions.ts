@@ -11,6 +11,14 @@ export const sendTo = async (
   return sendAction(cell, state, "SEND-TO", { targetLabel, fromIndex: index });
 };
 
+export const sendAll = async (
+  cell: Spot,
+  state: SpotState,
+  targetLabel: string,
+) => {
+  return sendAction(cell, state, "SEND-ALL", { targetLabel });
+};
+
 export const flip = async (cell: Spot, state: SpotState) => {
   return sendAction(cell, state, "FLIP");
 };

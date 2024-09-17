@@ -25,7 +25,7 @@ const App: Component = () => {
   }
   return (
     <div class="flex center" style="height:100%">
-      <div class="">
+      <div class="" style="width:100%">
         <Dynamic component={page()} />
       </div>
       <Modal />
