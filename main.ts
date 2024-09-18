@@ -9,6 +9,7 @@ console.log(
   `--deno-compiled-exe: ${Deno.args.includes("--deno-compiled-exe")}`,
 );
 console.log(Deno.args);
+console.log(`cwd: ` + Deno.cwd());
 
 const isCompiled = Deno.args.includes("--deno-compiled-exe");
 
@@ -16,7 +17,7 @@ const app = new Hono();
 app.route("/api", api);
 
 const staticRoot = isCompiled
-  ? join(__dirname, "client-dist")
+  ? join(Deno.cwd(), "client")
   : (__dirname.includes("flesh-n-blood")
     ? "/client/dist/"
     : `flesh-n-blood/client/dist/`);
