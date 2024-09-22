@@ -37,9 +37,11 @@ type GameConfigRow = {
 export type GameLayoutConfig = {
   rows: GameConfigRow[];
   cardBack: string;
+  widthRatio: number;
 };
 
 export const FleshBloodLayout: GameLayoutConfig = {
+  widthRatio: 0.72,
   rows: [{
     flex: "fill",
     backgroundColor: "lightred",

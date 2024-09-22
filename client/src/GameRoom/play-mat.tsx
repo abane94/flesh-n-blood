@@ -18,6 +18,9 @@ export const PlayMat = () => {
     const rowHeight = Math.floor(windowHeight / rows);
     console.log(`row height: ${rowHeight}`);
 
+    const cardWidth = Math.ceil(rowHeight * FleshBloodLayout.widthRatio);
+    console.log(`cardWidth: ${cardWidth}`);
+
     const destinations = FleshBloodLayout.rows.map(row => {
         return row.cells.filter(cell => cell.destination)
     }).flat().map(row => row.label);
@@ -62,9 +65,10 @@ export const PlayMat = () => {
             return props.opponent ? opponentData()?.state[props.cell.label]
                 : myData()?.state[props.cell.label];
         };
+        const cardImgStr = () => (props.cell.type === 'DECK' ? ((data() as DeckState)?.cards[0]) : (data() as SingleSpotState)?.card) || null;
         const image = () => data()?.faceDown
             ? layout().cardBack
-            : props.cell.type === 'DECK' ? ((data() as DeckState)?.cards[0] || layout().cardBack) : (data() as SingleSpotState)?.card
+            : cardImgStr()
 
         return <>
             <Switch fallback={<div class="cell">Invalid Cell</div>}>
@@ -73,7 +77,7 @@ export const PlayMat = () => {
                         {
                             (card, idx) =>
                                 <div data-tooltip={props.cell.label} class={"card-cell " + (props.cell.label === selectedCellConfig()?.label && !!props.opponent === !!isSelectedOpponent() ? 'selected' : '')} style={{ "height": `${rowHeight - 5}px` }}>
-                                    <div class="game-card" onclick={() => selectCard(data()!, props.cell, !!props.opponent, idx)}>
+                                    <div style={{ width: `${cardWidth}px` }} class="game-card" onclick={() => selectCard(data()!, props.cell, !!props.opponent, idx)}>
                                         <img class="game-card-img" src={data()?.faceDown ? layout().cardBack : card}></img>
                                     </div>
                                     {/* <div class="game-card-label">{props.cell.label}</div> */}
@@ -83,8 +87,8 @@ export const PlayMat = () => {
                 </Match>
                 <Match when={props.cell.type === 'SPOT' || !props.cell.horizontalStack}>
                     <div class={"card-cell " + (props.cell.label === selectedCellConfig()?.label && !!props.opponent === !!isSelectedOpponent() ? 'selected' : '')} style={{ "height": `${rowHeight - 5}px` }} onclick={() => selectCard(data()!, props.cell, !!props.opponent)}>
-                        <div class="game-card">
-                            <Show when={image() || !props.cell.hidePlaceholder}>
+                        <div class="game-card" style={{ width: `${cardWidth}px` }}>
+                            <Show when={image()}>
                                 <img class="game-card-img" src={image() || layout().cardBack}></img>
                             </Show>
                         </div>
