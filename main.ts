@@ -24,7 +24,8 @@ const app = new Hono();
 app.route("/api", api);
 
 const staticRoot = isCompiled
-  ? join(Deno.cwd(), "client")
+  // ? join(Deno.cwd(), "client")
+  ? 'client'
   : (__dirname.includes("flesh-n-blood")
     ? "/client/dist/"
     : `flesh-n-blood/client/dist/`);
