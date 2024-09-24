@@ -54,3 +54,18 @@
     opacity: 0;
     border: 2px solid black;
 }
+
+.deck-init__toolbar {
+    display: flex;
+    justify-content: center;
+}
+
+.deck-init__toolbar > * {
+    margin: 5px;
+}
+
+.deck-init__export-textarea {
+    min-width: 80vh;
+    font-size: smaller;
+    height: 80vh;
+}

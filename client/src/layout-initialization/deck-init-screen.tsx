@@ -3,7 +3,7 @@ import { FleshBloodLayout, getConfigObject, Spot } from '../../../config';
 import './deck-init.css';
 import { deckData, setDeckData } from "../global-state";
 import { Dropdown } from "../widgets/dropdown";
-import { setIsModalOpen, setModalComponent } from "../widgets/modal";
+import { setIsModalOpen, setModalComponent, setModalConfig } from "../widgets/modal";
 
 const KEYS = {
     deckList: 'DeckList'
@@ -64,7 +64,7 @@ export const GameInitScreen = () => {
                     ...deckList(),
                     name
                 ]);
-                localStorage.setItem(KEYS.deckList, JSON.stringify(deckList));
+                localStorage.setItem(KEYS.deckList, JSON.stringify((deckList())));
             }
             localStorage.setItem(name, JSON.stringify(data()));
         }
@@ -82,26 +82,38 @@ export const GameInitScreen = () => {
     }
 
     const exportData = () => {
+        setIsModalOpen(false);
+        setModalConfig({ title: 'Export' });
         const json = JSON.stringify(data(), undefined, 4);
         setExportDataStr(json);
         setModalComponent(() => exportDisplay);
         setIsModalOpen(true);
     }
 
-    const importData = () => {
-        const json = prompt('Paste deck data');
+    const openImportModal = () => {
+        setIsModalOpen(false);
+        setModalConfig({ title: 'Import' });
+        setModalComponent(() => importDisplay);
+        setIsModalOpen(true);
+    }
+
+    const importData = (json?: string) => {
+        if (!json) {
+            json = prompt('Paste deck data');
+        }
         if (json) {
             try {
                 const newData = {}
                 const importedData = JSON.parse(json);
+                console.log(importedData)
                 if (importedData) {
-                    const error = validateImportData(importData);
+                    const error = validateImportData(importedData);
                     if (error) {
                         alert('Could not import data:\n' + error);
                         return;
                     }
                     const existingFields = Object.keys(data());
-                    setData(Object.assign(importData, data()));
+                    setData(Object.assign(importedData, data()));
                     const existingStr = existingFields.length ? '\nThe following fields had existing data, and were not overwritten but the import\n'
                         + existingFields.join('\n')
                         : '';
@@ -149,9 +161,20 @@ export const GameInitScreen = () => {
     const exportDisplay = () => {
         return (
             <section class="content">
-                <code>
+                {/* <code>
                     {exportDataStr()}
-                </code>
+                </code> */}
+                <textarea class="deck-init__export-textarea" value={exportDataStr()}></textarea>
+            </section>
+        )
+    }
+
+    const importDisplay = () => {
+        let textArea;
+        return (
+            <section class="content">
+                <textarea readonly ref={textArea}></textarea>
+                <button onclick={() => importData(textArea.value)}>Import</button>
             </section>
         )
     }
@@ -160,24 +183,28 @@ export const GameInitScreen = () => {
     return <>
         <div class="deck-init-screen">
             <div class="deck-init-layout">
-                <Show when={deckList().length}>
-                    <Dropdown title="Load Deck">
-                        <For each={deckList()}>
-                            {(name, i) => <button onclick={() => loadDeck(name)}>
-                                {name}
-                            </button>}
-                        </For>
-                    </Dropdown>
-                </Show>
-                <Show when={() => Object.keys(data()).length}>
-                    <button onclick={exportData}>
-                        Export
-                    </button>
-                </Show>
+                <div class="deck-init__toolbar">
+                    <Show when={deckList().length}>
+                        <Dropdown title="Load Deck">
+                            <For each={deckList()}>
+                                {(name, i) => <div><button onclick={() => loadDeck(name)}>
+                                    {name}
+                                </button></div>}
+                            </For>
+                        </Dropdown>
+                    </Show>
+                    <Show when={() => Object.keys(data()).length}>
+                        <button onclick={exportData}>
+                            Export
+                        </button>
+                    </Show>
 
-                <button onclick={importData}>
-                    Import
-                </button>
+                    <button onclick={openImportModal}>
+                        Import
+                    </button>
+
+                    <button onclick={saveDeck}>Save Deck</button>
+                </div>
 
                 <For each={FleshBloodLayout.rows}>{(row, i) =>
                     <div class="game-row" style={{ "max-height": `${rowHeight}px` }}>
@@ -193,21 +220,20 @@ export const GameInitScreen = () => {
                         }</For>
                     </div>
                 }</For>
-                <button onclick={saveDeck}>Save Deck</button>
                 <button onclick={continueWithDeck}>Continue</button>
             </div>
             <Show when={inputCell() !== null}>
                 <div class="input-panel">
                     <h2>{inputCellLabel()}</h2>
                     <Show when={inputCell()!.type === 'DECK'}>
-                        <textarea id={inputCellLabel()} ref={inputTextArea} value={data()[inputCellLabel() || '']?.join?.('\n') || ''}></textarea>
+                        <textarea onblur={saveSpot} id={inputCellLabel()} ref={inputTextArea} value={data()[inputCellLabel() || '']?.join?.('\n') || ''}></textarea>
                     </Show>
                     <Show when={inputCell()!.type === 'SPOT'}>
-                        <input id={inputCellLabel()} type="text" ref={inputField} value={data()[inputCellLabel() || ''] || ''}></input>
+                        <input onblur={saveSpot} id={inputCellLabel()} type="text" ref={inputField} value={data()[inputCellLabel() || ''] || ''}></input>
                     </Show>
                     <button onclick={saveSpot}>Save</button>
                 </div>
             </Show>
-        </div>
+        </div >
     </>
 }
