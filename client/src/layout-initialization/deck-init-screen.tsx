@@ -1,5 +1,5 @@
 import { For, Show, createResource, createSignal } from "solid-js";
-import { FleshBloodLayout, getConfigObject, Spot } from '../../../config';
+import { FleshBloodLayout, getConfigObject, Spot } from '../../../config.ts';
 import './deck-init.css';
 import { deckData, setDeckData } from "../global-state";
 import { Dropdown } from "../widgets/dropdown";
@@ -84,7 +84,14 @@ export const GameInitScreen = () => {
     const exportData = () => {
         setIsModalOpen(false);
         setModalConfig({ title: 'Export' });
-        const json = JSON.stringify(data(), undefined, 4);
+        const baseData: Record<string, string | string[]> = {};
+        for (const key of Object.keys(configObject).sort((k1, k2) => configObject[k2].type.localeCompare(configObject[k1].type))) {
+            const cell: Spot = configObject[key];
+            if (cell.initializable) {
+                baseData[key] = cell.type == 'DECK' ? [] : '';
+            }
+        }
+        const json = JSON.stringify(Object.assign(baseData, data()), undefined, 4);
         setExportDataStr(json);
         setModalComponent(() => exportDisplay);
         setIsModalOpen(true);

@@ -68,4 +68,6 @@
     min-width: 80vh;
     font-size: smaller;
     height: 80vh;
+    overflow-x: scroll;
+    text-wrap: nowrap;
 }
