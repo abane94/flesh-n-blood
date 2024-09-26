@@ -171,7 +171,7 @@ export const GameInitScreen = () => {
                 {/* <code>
                     {exportDataStr()}
                 </code> */}
-                <textarea class="deck-init__export-textarea" value={exportDataStr()}></textarea>
+                <textarea readonly class="deck-init__export-textarea" value={exportDataStr()}></textarea>
             </section>
         )
     }
@@ -180,7 +180,7 @@ export const GameInitScreen = () => {
         let textArea;
         return (
             <section class="content">
-                <textarea readonly ref={textArea}></textarea>
+                <textarea ref={textArea}></textarea>
                 <button onclick={() => importData(textArea.value)}>Import</button>
             </section>
         )
